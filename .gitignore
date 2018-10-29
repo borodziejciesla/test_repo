@@ -19,3 +19,5 @@ Thumbs.db
 obj/
 [Rr]elease*/
 _ReSharper*/
+/.metadata
+/HelloSTM32/.settings/language.settings.xml
