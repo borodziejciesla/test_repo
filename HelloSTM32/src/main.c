@@ -1,51 +1,86 @@
 #include "stm32f10x.h"
 
-void EXTI15_10_IRQHandler()
-{
- if (EXTI_GetITStatus(EXTI_Line13)) {
- if (GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_13) == 0) { // jesli przycisk jest przycisniety
- GPIO_SetBits(GPIOA, GPIO_Pin_5); // zapal diode
- } else {
- GPIO_ResetBits(GPIOA, GPIO_Pin_5);
- }
-
- EXTI_ClearITPendingBit(EXTI_Line13);
- }
-}
+static void send_char(char c);
+static void send_string(const char * s);
+static char recive_char(void);
 
 int main(void)
 {
- GPIO_InitTypeDef gpio;
- EXTI_InitTypeDef exti;
- NVIC_InitTypeDef nvic;
+	GPIO_InitTypeDef gpio;
+	USART_InitTypeDef uart;
 
- RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD, ENABLE);
- RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
 
- GPIO_StructInit(&gpio);
- gpio.GPIO_Pin = GPIO_Pin_5;
- gpio.GPIO_Mode = GPIO_Mode_Out_PP;
- GPIO_Init(GPIOA, &gpio);
+	GPIO_StructInit(&gpio);
+	gpio.GPIO_Pin = GPIO_Pin_2;
+	gpio.GPIO_Mode = GPIO_Mode_AF_PP;
+	GPIO_Init(GPIOA, &gpio);
 
- gpio.GPIO_Pin = GPIO_Pin_13;
- gpio.GPIO_Mode = GPIO_Mode_IPU;
- GPIO_Init(GPIOC, &gpio);
+	gpio.GPIO_Pin = GPIO_Pin_3;
+	gpio.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+	GPIO_Init(GPIOA, &gpio);
 
- GPIO_EXTILineConfig(GPIO_PortSourceGPIOC, GPIO_PinSource13);
+	USART_StructInit(&uart);
+	uart.USART_BaudRate = 9600;
+	USART_Init(USART2, &uart);
 
- EXTI_StructInit(&exti);
- exti.EXTI_Line = EXTI_Line13;
- exti.EXTI_Mode = EXTI_Mode_Interrupt;
- exti.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
- exti.EXTI_LineCmd = ENABLE;
- EXTI_Init(&exti);
+	USART_Cmd(USART2, ENABLE);
 
- nvic.NVIC_IRQChannel = EXTI15_10_IRQn;
- nvic.NVIC_IRQChannelPreemptionPriority = 0x00;
- nvic.NVIC_IRQChannelSubPriority = 0x00;
- nvic.NVIC_IRQChannelCmd = ENABLE;
- NVIC_Init(&nvic);
+	while(1)
+	{
+		char c = recive_char();
+		if (c != 0)
+		{
+			switch (c)
+			{
+				case 'a':
+				{
+					send_string("Hello world!\r\n");
+					break;
+				}
+				case 'b':
+				{
+					send_string("Hello!\r\n");
+					break;
+				}
+				default:
+				{
+					send_string("hgdfghdui!\r\n");
+				}
+			}
+		}
+	}
 
- while (1) {
- }
+}
+
+
+static void send_char(char c)
+{
+	while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET){};
+	USART_SendData(USART2, c);
+}
+
+static void send_string(const char * s)
+{
+	int i = 0;
+	while(*s)
+	{
+		send_char(*s++);
+	}
+}
+
+static char recive_char(void)
+{
+	char recived_char = 0;
+
+	if (USART_GetFlagStatus(USART2, USART_FLAG_RXNE))
+	{
+		recived_char = USART_ReceiveData(USART2);
+	}
+	else
+	{
+		/* Do nothing */
+	}
 }
