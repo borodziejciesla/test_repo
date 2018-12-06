@@ -41,6 +41,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			{
 				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
 				direction = DIRECTION_RIGHT;
+
+				break;
 			}
 
 			default:
