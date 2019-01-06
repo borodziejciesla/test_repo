@@ -13,7 +13,9 @@
 
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
-
+/*
+ * Button interruption
+ */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	if(GPIO_Pin == GPIO_PIN_13)
@@ -25,12 +27,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 		if (pwm_state->is_started == false)
 		{
-			TIM_HandleTypeDef * tim = getGlobalTimer();
-			initTimer(tim, 3.0f);
-			HAL_TIM_Base_Start_IT(tim);
-			__HAL_TIM_ENABLE_IT(tim, TIM_IT_CC1);
-			__HAL_TIM_SET_COMPARE(getGlobalPWM(), TIM_CHANNEL_2, (float)(pwm_state->max_pwm_value * pwm_state->resolution));
-
 			pwm_state->is_started = true;
 		}
 		else
@@ -38,7 +34,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			/* stop PWM */
 			pwm_state->is_started = false;
 			pwm_state->is_initialized = false;
-			pwm_state->current_pwm_value = 0.0f;
+			pwm_state->current_pwm_value = INITIAL_PWM_VALUE;
 			__HAL_TIM_SET_COMPARE(getGlobalPWM(), TIM_CHANNEL_2, 0.0f);
 		}
 	}
@@ -53,20 +49,24 @@ void TIM2_IRQHandler(void)
 	HAL_TIM_IRQHandler(getGlobalTimer());
 }
 
+/*
+ * Timer interruption
+ */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	PWM_STATE_T * pwm_state = getGlobalPWMState();
 
-	if ((pwm_state->is_started == true) && (pwm_state->is_initialized == false))
+	if ((pwm_state->is_started == false) && (pwm_state->is_initialized == false))
 	{
-		pwm_state->is_initialized = true;
 		__HAL_TIM_SET_COMPARE(getGlobalPWM(), TIM_CHANNEL_2, 0.0f);
+	}
+	else if ((pwm_state->is_started == true) && (pwm_state->is_initialized == false))
+	{
+		__HAL_TIM_SET_COMPARE(getGlobalPWM(), TIM_CHANNEL_2, (float)(pwm_state->resolution));
+		pwm_state->is_initialized = true;
 	}
 	else if ((pwm_state->is_started == true) && (pwm_state->is_initialized == true))
 	{
-		TIM_HandleTypeDef * tim = getGlobalTimer();
-		initTimer(tim, pwm_state->pwm_step_time);
-
 		if (pwm_state->current_pwm_value < pwm_state->max_pwm_value)
 		{
 			pwm_state->current_pwm_value += pwm_state->pwm_step;
@@ -77,20 +77,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		}
 
 		float pwm_value = pwm_state->resolution * MIN(pwm_state->max_pwm_value, pwm_state->current_pwm_value);
-
-		__HAL_TIM_SET_COMPARE(getGlobalPWM(), TIM_CHANNEL_2, (float)(pwm_value * pwm_state->resolution));
+		__HAL_TIM_SET_COMPARE(getGlobalPWM(), TIM_CHANNEL_2, pwm_value);
 	}
 	else
 	{
 		/* Do nothing */
 	}
-
-	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5) == GPIO_PIN_RESET)
-	 {
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-	 }
-	 else
-	 {
-		 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
-	 }
 }

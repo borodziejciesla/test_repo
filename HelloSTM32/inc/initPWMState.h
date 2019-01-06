@@ -11,6 +11,8 @@
 #include "PWM_STATE.h"
 #include "stm32f1xx.h"
 
+#define INITIAL_PWM_VALUE (0.3f)
+
 extern PWM_STATE_T* getGlobalPWMState(void);
 extern TIM_HandleTypeDef* getGlobalPWM(void);
 extern TIM_HandleTypeDef* getGlobalTimer(void);

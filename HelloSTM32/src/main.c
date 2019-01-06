@@ -19,12 +19,22 @@ int main(void)
 	__HAL_RCC_TIM2_CLK_ENABLE();
 
 	/* Initialize PWM structure */
-	initPWMState(getGlobalPWMState(), 0.5f, 0.1f, 0.02f, 1000, 300.0f);
+	float pwm_max_value = 0.5f;
+	float pwm_step_time = 3.0f;
+	float pwm_step = 0.002f;
+	uint32_t pwm_resolution = 1000;
+	float pwm_frequency = 300.0f;
+
+	initPWMState(getGlobalPWMState(), pwm_max_value, pwm_step_time, pwm_step, pwm_resolution, pwm_frequency);
 
 	/* Initialize peripherals */
 	initButton(&gpio);
 	initLED(&gpio);
 	initPWM(&gpio, getGlobalPWM(), getGlobalOC(), getGlobalPWMState());
+	initTimer(getGlobalTimer(), getGlobalPWMState()->pwm_step_time);
+
+	HAL_TIM_Base_Start_IT(getGlobalTimer());
+	__HAL_TIM_ENABLE_IT(getGlobalTimer(), TIM_IT_CC1);
 
 	/* Initialize interruptions */
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);

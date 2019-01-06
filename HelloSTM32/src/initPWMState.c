@@ -42,7 +42,7 @@ void initPWMState(PWM_STATE_T * const pwm_state,
 	pwm_state->is_started = false;
 	pwm_state->is_initialized = false;
 	pwm_state->max_pwm_value = max_pwm_value;
-	pwm_state->current_pwm_value = 0.0f;
+	pwm_state->current_pwm_value = INITIAL_PWM_VALUE;
 	pwm_state->is_max_velocity = false;
 	pwm_state->pwm_step = pwm_step;
 	pwm_state->resolution = pwm_resolution;
