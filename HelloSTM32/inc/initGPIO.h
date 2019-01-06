@@ -14,6 +14,7 @@ extern void initButton(GPIO_InitTypeDef * const gpio);
 extern void initLED(GPIO_InitTypeDef * const gpio);
 extern void initPWM(GPIO_InitTypeDef * const gpio,
 		TIM_HandleTypeDef * const tim,
+		TIM_OC_InitTypeDef * const oc,
 		float frequency_hz,
 		uint16_t steps);
 

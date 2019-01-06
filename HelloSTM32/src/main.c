@@ -6,6 +6,7 @@
 /* Global variables for file */
 TIM_HandleTypeDef tim;
 GPIO_InitTypeDef gpio;
+TIM_OC_InitTypeDef oc;
 
 /************************************************************************************************/
 int main(void)
@@ -24,7 +25,7 @@ int main(void)
 	/* Initialize peripherals */
 	initButton(&gpio);
 	initLED(&gpio);
-	initPWM(&gpio, &tim, 300.0f, 1000);
+	initPWM(&gpio, &tim, &oc, 300.0f, 1000);
 
 	/* Initialize interruptions */
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);

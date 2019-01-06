@@ -26,6 +26,7 @@ void initLED(GPIO_InitTypeDef * const gpio)
 
 extern void initPWM(GPIO_InitTypeDef * const gpio,
 		TIM_HandleTypeDef * const tim,
+		TIM_OC_InitTypeDef * const oc,
 		float frequency_hz,
 		uint16_t steps)
 {
@@ -47,14 +48,13 @@ extern void initPWM(GPIO_InitTypeDef * const gpio,
 	tim->Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
 	HAL_TIM_PWM_Init(tim);
 
-	TIM_OC_InitTypeDef oc;
-	oc.OCMode = TIM_OCMODE_PWM1;
-	oc.Pulse = 100;
-	oc.OCPolarity = TIM_OCPOLARITY_HIGH;
-	oc.OCNPolarity = TIM_OCNPOLARITY_LOW;
-	oc.OCFastMode = TIM_OCFAST_ENABLE;
-	oc.OCIdleState = TIM_OCIDLESTATE_SET;
-	oc.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-	HAL_TIM_PWM_ConfigChannel(tim, &oc, TIM_CHANNEL_2);
+	oc->OCMode = TIM_OCMODE_PWM1;
+	oc->Pulse = 0;
+	oc->OCPolarity = TIM_OCPOLARITY_HIGH;
+	oc->OCNPolarity = TIM_OCNPOLARITY_LOW;
+	oc->OCFastMode = TIM_OCFAST_ENABLE;
+	oc->OCIdleState = TIM_OCIDLESTATE_SET;
+	oc->OCNIdleState = TIM_OCNIDLESTATE_RESET;
+	HAL_TIM_PWM_ConfigChannel(tim, oc, TIM_CHANNEL_2);
 	HAL_TIM_PWM_Start(tim, TIM_CHANNEL_2);
 }
