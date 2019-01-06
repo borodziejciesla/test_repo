@@ -1,129 +1,34 @@
-/**
-  ******************************************************************************
-  * @file    main.c
-  * @author  Ac6
-  * @version V1.0
-  * @date    01-December-2013
-  * @brief   Default main function.
-  ******************************************************************************
-*/
-
 #include "stm32f1xx.h"
+#include "PWM_STATE.h"
+#include "initPWMState.h"
+#include "initGPIO.h"
 
-typedef enum DIRECTION
-{
-	DIRECTION_LEFT = 0,
-	DIRECTION_RIGHT = 1
-} DIRECTION_T;
+/* Global variables for file */
+TIM_HandleTypeDef tim;
+GPIO_InitTypeDef gpio;
 
-volatile DIRECTION_T direction = DIRECTION_RIGHT;
-volatile uint32_t led = 0;
-
-
-/**********************************************************************************/
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-	if (GPIO_Pin == GPIO_PIN_13)
-	{
-		HAL_GPIO_WritePin(GPIOC, 1 << led, GPIO_PIN_RESET);
-
-		switch (direction)
-		{
-			case DIRECTION_RIGHT:
-			{
-				direction = DIRECTION_LEFT;
-				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-
-				break;
-			}
-
-			case DIRECTION_LEFT:
-			{
-				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
-				direction = DIRECTION_RIGHT;
-
-				break;
-			}
-
-			default:
-			{
-				// Do nothing
-			}
-		}
-
-	}
-	else
-	{
-		// Do nothing
-	}
-}
-
-/**********************************************************************************/
+/************************************************************************************************/
 int main(void)
 {
+	SystemCoreClock = 8000000; // 8Mhz
+
+	/* Initialize HAl and clock */
 	HAL_Init();
-
-	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
-
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 	__HAL_RCC_GPIOB_CLK_ENABLE();
-	__HAL_RCC_GPIOC_CLK_ENABLE();
-	__HAL_RCC_GPIOD_CLK_ENABLE();
+	__HAL_RCC_TIM4_CLK_ENABLE();
 
-	// Output
-	GPIO_InitTypeDef gpio;
-	gpio.Pin = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4
-			| GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9;
-	gpio.Mode = GPIO_MODE_OUTPUT_PP;
-	gpio.Pull = GPIO_NOPULL;
-	gpio.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(GPIOC, &gpio);
+	/* Initialize PWM structure */
+	initPWMState(getGlobalPWMState(), 0.5f, 0.02f);
 
-	gpio.Pin = GPIO_PIN_5;
-	gpio.Mode = GPIO_MODE_OUTPUT_PP;
-	gpio.Pull = GPIO_NOPULL;
-	HAL_GPIO_Init(GPIOA, &gpio);
+	/* Initialize peripherals */
+	initButton(&gpio);
+	initLED(&gpio);
+	initPWM(&gpio, &tim, 300.0f, 1000);
 
-	// Input
-	gpio.Mode = GPIO_MODE_IT_RISING;
-	gpio.Pull = GPIO_PULLUP;
-	gpio.Pin = GPIO_PIN_13;
-	HAL_GPIO_Init(GPIOC, &gpio);
+	/* Initialize interruptions */
+	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
-	// Infinite Loop
-	for(;;)
-	{
-		HAL_GPIO_WritePin(GPIOC, 1 << led, GPIO_PIN_SET);
-		HAL_Delay(150);
-		HAL_GPIO_WritePin(GPIOC, 1 << led, GPIO_PIN_RESET);
-
-
-		switch (direction)
-		{
-			case DIRECTION_RIGHT:
-			{
-				if (++led >= 10)
-				{
-					led = 0;
-				}
-
-				break;
-			}
-
-			case DIRECTION_LEFT:
-			{
-				if (--led <= 0)
-				{
-					led = 9;
-				}
-
-				break;
-			}
-
-			default:
-			{
-				// Do nothing
-			}
-		}
+	while (1) {
 	}
 }
