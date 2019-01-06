@@ -24,11 +24,10 @@ void initLED(GPIO_InitTypeDef * const gpio)
 	HAL_GPIO_Init(GPIOA, gpio);
 }
 
-extern void initPWM(GPIO_InitTypeDef * const gpio,
+void initPWM(GPIO_InitTypeDef * const gpio,
 		TIM_HandleTypeDef * const tim,
 		TIM_OC_InitTypeDef * const oc,
-		float frequency_hz,
-		uint16_t steps)
+		const PWM_STATE_T * const pwm_state)
 {
 	gpio->Mode = GPIO_MODE_AF_PP;
 	gpio->Pin = GPIO_PIN_7;
@@ -36,11 +35,11 @@ extern void initPWM(GPIO_InitTypeDef * const gpio,
 	gpio->Speed = GPIO_SPEED_FREQ_HIGH;
 	HAL_GPIO_Init(GPIOB, gpio);
 
-	float t_sys = (float)steps * 1.0f / ((float)SystemCoreClock);
-	float t = 1.0f / frequency_hz;
+	float t_sys = (float)pwm_state->resolution * 1.0f / ((float)SystemCoreClock);
+	float t = 1.0f / pwm_state->frequency;
 
 	tim->Instance = TIM4;
-	tim->Init.Period = (uint32_t)steps - 1;
+	tim->Init.Period = pwm_state->resolution - 1;
 	tim->Init.Prescaler = ((uint32_t)(t / t_sys)) - 1;
 	tim->Init.ClockDivision = 0;
 	tim->Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -57,4 +56,16 @@ extern void initPWM(GPIO_InitTypeDef * const gpio,
 	oc->OCNIdleState = TIM_OCNIDLESTATE_RESET;
 	HAL_TIM_PWM_ConfigChannel(tim, oc, TIM_CHANNEL_2);
 	HAL_TIM_PWM_Start(tim, TIM_CHANNEL_2);
+}
+
+void initTimer(TIM_HandleTypeDef * const tim, float time)
+{
+	tim->Instance = TIM2;
+	tim->Init.Period = ((uint32_t)(time / 0.001f)) - 1;
+	tim->Init.Prescaler = 8000 - 1;
+	tim->Init.ClockDivision = 0;
+	tim->Init.CounterMode = TIM_COUNTERMODE_UP;
+	tim->Init.RepetitionCounter = 0;
+	tim->Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+	HAL_TIM_Base_Init(tim);
 }

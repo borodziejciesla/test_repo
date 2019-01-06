@@ -9,8 +9,17 @@
 #define INITPWMSTATE_H_
 
 #include "PWM_STATE.h"
+#include "stm32f1xx.h"
 
 extern PWM_STATE_T* getGlobalPWMState(void);
-extern void initPWMState(PWM_STATE_T * const pwm_state, float max_pwm_value, float pwm_step);
+extern TIM_HandleTypeDef* getGlobalPWM(void);
+extern TIM_HandleTypeDef* getGlobalTimer(void);
+extern TIM_OC_InitTypeDef* getGlobalOC(void);
+extern void initPWMState(PWM_STATE_T * const pwm_state,
+		float max_pwm_value,
+		float pwm_step_time,
+		float pwm_step,
+		uint32_t pwm_resolution,
+		float pwm_frequency);
 
 #endif /* INITPWMSTATE_H_ */

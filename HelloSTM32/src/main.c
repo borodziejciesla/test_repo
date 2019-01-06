@@ -4,9 +4,7 @@
 #include "initGPIO.h"
 
 /* Global variables for file */
-TIM_HandleTypeDef tim;
 GPIO_InitTypeDef gpio;
-TIM_OC_InitTypeDef oc;
 
 /************************************************************************************************/
 int main(void)
@@ -18,17 +16,19 @@ int main(void)
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 	__HAL_RCC_TIM4_CLK_ENABLE();
+	__HAL_RCC_TIM2_CLK_ENABLE();
 
 	/* Initialize PWM structure */
-	initPWMState(getGlobalPWMState(), 0.5f, 0.02f);
+	initPWMState(getGlobalPWMState(), 0.5f, 0.1f, 0.02f, 1000, 300.0f);
 
 	/* Initialize peripherals */
 	initButton(&gpio);
 	initLED(&gpio);
-	initPWM(&gpio, &tim, &oc, 300.0f, 1000);
+	initPWM(&gpio, getGlobalPWM(), getGlobalOC(), getGlobalPWMState());
 
 	/* Initialize interruptions */
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+	HAL_NVIC_EnableIRQ(TIM2_IRQn);
 
 	while (1) {
 	}

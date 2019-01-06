@@ -11,5 +11,7 @@
 #include "stm32f1xx.h"
 
 extern void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
+extern void TIM2_IRQHandler(void);
+extern void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 
 #endif /* INTERRUPTIONS_H_ */

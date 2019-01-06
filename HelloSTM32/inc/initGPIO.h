@@ -9,13 +9,14 @@
 #define INITGPIO_H_
 
 #include "stm32f1xx.h"
+#include "PWM_STATE.h"
 
 extern void initButton(GPIO_InitTypeDef * const gpio);
 extern void initLED(GPIO_InitTypeDef * const gpio);
 extern void initPWM(GPIO_InitTypeDef * const gpio,
 		TIM_HandleTypeDef * const tim,
 		TIM_OC_InitTypeDef * const oc,
-		float frequency_hz,
-		uint16_t steps);
+		const PWM_STATE_T * const pwm_state);
+extern void initTimer(TIM_HandleTypeDef * const tim, float time);
 
 #endif /* INITGPIO_H_ */
