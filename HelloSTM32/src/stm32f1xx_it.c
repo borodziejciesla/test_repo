@@ -43,5 +43,18 @@ void SysTick_Handler(void)
 
 void EXTI15_10_IRQHandler(void)
 {
-	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_13);
+	if ((EXTI->IMR & EXTI_IMR_MR13) && (EXTI->PR & EXTI_PR_PR13))
+	{
+		HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_13);
+		EXTI->PR |= EXTI_PR_PR13;
+	}
+	else if ((EXTI->IMR & EXTI_IMR_MR14) && (EXTI->PR & EXTI_PR_PR14))
+	{
+		HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_14);
+		EXTI->PR |= EXTI_PR_PR14;
+	}
+	else
+	{
+		/* Do nothing */
+	}
 }

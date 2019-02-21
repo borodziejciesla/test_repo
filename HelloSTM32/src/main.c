@@ -33,6 +33,11 @@ int main(void)
 	initPWM(&gpio, getGlobalPWM(), getGlobalOC(), getGlobalPWMState());
 	initTimer(getGlobalTimer(), getGlobalPWMState()->pwm_step_time);
 
+	gpio.Mode = GPIO_MODE_IT_RISING;
+	gpio.Pull = GPIO_PULLUP;
+	gpio.Pin = GPIO_PIN_14;
+	HAL_GPIO_Init(GPIOC, &gpio);
+
 	HAL_TIM_Base_Start_IT(getGlobalTimer());
 	__HAL_TIM_ENABLE_IT(getGlobalTimer(), TIM_IT_CC1);
 

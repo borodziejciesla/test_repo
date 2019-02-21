@@ -11,32 +11,47 @@
 #include "initPWMState.h"
 #include "initGPIO.h"
 
+#define BUTTON			GPIO_PIN_13
+#define COMPARATOR 		GPIO_PIN_14
+
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
+/*****************************************************************************************/
 /*
  * Button interruption
  */
+void buttonInterruption(void)
+{
+	/* Signalizes interruption */
+	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+
+	PWM_STATE_T * pwm_state = getGlobalPWMState();
+
+	if (pwm_state->is_started == false)
+	{
+		pwm_state->is_started = true;
+	}
+	else
+	{
+		/* stop PWM */
+		pwm_state->is_started = false;
+		pwm_state->is_initialized = false;
+		pwm_state->current_pwm_value = INITIAL_PWM_VALUE;
+		__HAL_TIM_SET_COMPARE(getGlobalPWM(), TIM_CHANNEL_2, 0.0f);
+	}
+}
+
+/*****************************************************************************************/
+/* EXTI */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	if(GPIO_Pin == GPIO_PIN_13)
+	if(GPIO_Pin == BUTTON)
 	{
-	    /* Signalizes interruption */
+		buttonInterruption();
+	}
+	else if (GPIO_Pin == COMPARATOR)
+	{
 		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-
-		PWM_STATE_T * pwm_state = getGlobalPWMState();
-
-		if (pwm_state->is_started == false)
-		{
-			pwm_state->is_started = true;
-		}
-		else
-		{
-			/* stop PWM */
-			pwm_state->is_started = false;
-			pwm_state->is_initialized = false;
-			pwm_state->current_pwm_value = INITIAL_PWM_VALUE;
-			__HAL_TIM_SET_COMPARE(getGlobalPWM(), TIM_CHANNEL_2, 0.0f);
-		}
 	}
 	else
 	{
@@ -49,6 +64,7 @@ void TIM2_IRQHandler(void)
 	HAL_TIM_IRQHandler(getGlobalTimer());
 }
 
+/*****************************************************************************************/
 /*
  * Timer interruption
  */
