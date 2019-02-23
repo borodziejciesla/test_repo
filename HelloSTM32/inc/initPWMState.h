@@ -23,7 +23,8 @@ extern void initPWMState(PWM_STATE_T * const pwm_state,
 		float pwm_step,
 		uint32_t pwm_resolution,
 		float pwm_frequency);
-UART_HandleTypeDef* getUart(void);
-GPIO_InitTypeDef* getGPIO(void);
+extern UART_HandleTypeDef* getUart(void);
+extern GPIO_InitTypeDef* getGPIO(void);
+extern volatile float* getSpeed(void);
 
 #endif /* INITPWMSTATE_H_ */

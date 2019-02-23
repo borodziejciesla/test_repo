@@ -45,12 +45,10 @@ int main(void)
 	/* Initialize interruptions */
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 	HAL_NVIC_EnableIRQ(TIM2_IRQn);
-	NVIC_EnableIRQ(USART2_IRQn);
+	HAL_NVIC_EnableIRQ(USART2_IRQn);
 
 	volatile float f = 16.0f;
 
 	while (1) {
-		sendMeasurement(&f);
-		HAL_Delay(100);
 	}
 }

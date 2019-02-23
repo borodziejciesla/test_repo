@@ -22,6 +22,8 @@
  */
 void buttonInterruption(void)
 {
+	static float last_time = 0.0f;
+
 	/* Signalizes interruption */
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 
@@ -39,6 +41,13 @@ void buttonInterruption(void)
 		pwm_state->current_pwm_value = INITIAL_PWM_VALUE;
 		__HAL_TIM_SET_COMPARE(getGlobalPWM(), TIM_CHANNEL_2, 0.0f);
 	}
+
+	uint32_t t = HAL_GetTick();
+	float time = (float)t;
+	*getSpeed() = 1.0f / ((time - last_time) / 1000.0f);
+	sendMeasurement(getSpeed());
+
+	last_time = time;
 }
 
 /*****************************************************************************************/
@@ -101,6 +110,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	}
 }
 
+/*****************************************************************************************/
+/* USART Transmit Interruption */
 void USART2_IRQHandler(void)
 {
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, GPIO_PIN_SET);

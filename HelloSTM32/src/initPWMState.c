@@ -13,6 +13,7 @@ static TIM_OC_InitTypeDef oc_global;
 static TIM_HandleTypeDef pwm_global;
 static UART_HandleTypeDef uart;
 static GPIO_InitTypeDef gpio;
+static volatile float speed;
 
 PWM_STATE_T* getGlobalPWMState(void)
 {
@@ -60,4 +61,9 @@ UART_HandleTypeDef* getUart(void)
 GPIO_InitTypeDef* getGPIO(void)
 {
 	return &gpio;
+}
+
+volatile float* getSpeed(void)
+{
+	return &speed;
 }
