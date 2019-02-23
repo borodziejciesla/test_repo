@@ -7,6 +7,8 @@
 
 #include "initGPIO.h"
 
+#include "stm32f1xx.h"
+
 void initButton(GPIO_InitTypeDef * const gpio)
 {
 	gpio->Mode = GPIO_MODE_IT_RISING;
@@ -68,4 +70,29 @@ void initTimer(TIM_HandleTypeDef * const tim, float time)
 	tim->Init.RepetitionCounter = 0;
 	tim->Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
 	HAL_TIM_Base_Init(tim);
+}
+
+void USARTInit(GPIO_InitTypeDef * const gpio, UART_HandleTypeDef * const uart)
+{
+	/* Configure pins */
+	gpio->Mode = GPIO_MODE_AF_PP;
+	gpio->Pin = GPIO_PIN_2;
+	gpio->Pull = GPIO_NOPULL;
+	gpio->Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(GPIOA, gpio);
+
+	gpio->Mode = GPIO_MODE_AF_INPUT;
+	gpio->Pin = GPIO_PIN_3;
+	HAL_GPIO_Init(GPIOA, gpio);
+
+	/* Configure USART */
+	uart->Instance = USART2;
+	uart->Init.BaudRate = 115200;
+	uart->Init.WordLength = UART_WORDLENGTH_8B;
+	uart->Init.Parity = UART_PARITY_NONE;
+	uart->Init.StopBits = UART_STOPBITS_1;
+	uart->Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	uart->Init.OverSampling = UART_OVERSAMPLING_16;
+	uart->Init.Mode = UART_MODE_TX_RX;
+	HAL_UART_Init(uart);
 }

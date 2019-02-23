@@ -3,8 +3,7 @@
 #include "initPWMState.h"
 #include "initGPIO.h"
 
-/* Global variables for file */
-GPIO_InitTypeDef gpio;
+#include <string.h>
 
 /************************************************************************************************/
 int main(void)
@@ -17,6 +16,7 @@ int main(void)
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 	__HAL_RCC_TIM4_CLK_ENABLE();
 	__HAL_RCC_TIM2_CLK_ENABLE();
+	__HAL_RCC_USART2_CLK_ENABLE();
 
 	/* Initialize PWM structure */
 	float pwm_max_value = 0.5f;
@@ -28,15 +28,16 @@ int main(void)
 	initPWMState(getGlobalPWMState(), pwm_max_value, pwm_step_time, pwm_step, pwm_resolution, pwm_frequency);
 
 	/* Initialize peripherals */
-	initButton(&gpio);
-	initLED(&gpio);
-	initPWM(&gpio, getGlobalPWM(), getGlobalOC(), getGlobalPWMState());
+	initButton(getGPIO());
+	initLED(getGPIO());
+	initPWM(getGPIO(), getGlobalPWM(), getGlobalOC(), getGlobalPWMState());
 	initTimer(getGlobalTimer(), getGlobalPWMState()->pwm_step_time);
+	USARTInit(getGPIO(), getUart());
 
-	gpio.Mode = GPIO_MODE_IT_RISING;
-	gpio.Pull = GPIO_PULLUP;
-	gpio.Pin = GPIO_PIN_14;
-	HAL_GPIO_Init(GPIOC, &gpio);
+	getGPIO()->Mode = GPIO_MODE_IT_RISING;
+	getGPIO()->Pull = GPIO_PULLDOWN;
+	getGPIO()->Pin = GPIO_PIN_14;
+	HAL_GPIO_Init(GPIOC, getGPIO());
 
 	HAL_TIM_Base_Start_IT(getGlobalTimer());
 	__HAL_TIM_ENABLE_IT(getGlobalTimer(), TIM_IT_CC1);
@@ -44,7 +45,12 @@ int main(void)
 	/* Initialize interruptions */
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 	HAL_NVIC_EnableIRQ(TIM2_IRQn);
+	NVIC_EnableIRQ(USART2_IRQn);
+
+	volatile float f = 16.0f;
 
 	while (1) {
+		sendMeasurement(&f);
+		HAL_Delay(100);
 	}
 }

@@ -11,6 +11,8 @@ static PWM_STATE_T pwm_state_global;
 static TIM_HandleTypeDef tim_global;
 static TIM_OC_InitTypeDef oc_global;
 static TIM_HandleTypeDef pwm_global;
+static UART_HandleTypeDef uart;
+static GPIO_InitTypeDef gpio;
 
 PWM_STATE_T* getGlobalPWMState(void)
 {
@@ -48,4 +50,14 @@ void initPWMState(PWM_STATE_T * const pwm_state,
 	pwm_state->resolution = pwm_resolution;
 	pwm_state->frequency = pwm_frequency;
 	pwm_state->pwm_step_time = pwm_step_time;
+}
+
+UART_HandleTypeDef* getUart(void)
+{
+	return &uart;
+}
+
+GPIO_InitTypeDef* getGPIO(void)
+{
+	return &gpio;
 }
