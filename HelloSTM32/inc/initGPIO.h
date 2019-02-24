@@ -21,5 +21,6 @@ extern void initTimer(TIM_HandleTypeDef * const tim,
 		float time);
 extern void USARTInit(GPIO_InitTypeDef * const gpio,
 		UART_HandleTypeDef * const uart);
+extern void initComparatorInput(GPIO_InitTypeDef * const gpio);
 
 #endif /* INITGPIO_H_ */

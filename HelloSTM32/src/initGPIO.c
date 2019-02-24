@@ -41,16 +41,16 @@ void initPWM(GPIO_InitTypeDef * const gpio,
 	float t = 1.0f / pwm_state->frequency;
 
 	tim->Instance = TIM4;
-	tim->Init.Period = pwm_state->resolution - 1;
-	tim->Init.Prescaler = ((uint32_t)(t / t_sys)) - 1;
-	tim->Init.ClockDivision = 0;
+	tim->Init.Period = pwm_state->resolution - 1u;
+	tim->Init.Prescaler = ((uint32_t)(t / t_sys)) - 1u;
+	tim->Init.ClockDivision = 0u;
 	tim->Init.CounterMode = TIM_COUNTERMODE_UP;
-	tim->Init.RepetitionCounter = 0;
+	tim->Init.RepetitionCounter = 0u;
 	tim->Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
 	HAL_TIM_PWM_Init(tim);
 
 	oc->OCMode = TIM_OCMODE_PWM1;
-	oc->Pulse = 0;
+	oc->Pulse = 0u;
 	oc->OCPolarity = TIM_OCPOLARITY_HIGH;
 	oc->OCNPolarity = TIM_OCNPOLARITY_LOW;
 	oc->OCFastMode = TIM_OCFAST_ENABLE;
@@ -63,11 +63,11 @@ void initPWM(GPIO_InitTypeDef * const gpio,
 void initTimer(TIM_HandleTypeDef * const tim, float time)
 {
 	tim->Instance = TIM2;
-	tim->Init.Period = ((uint32_t)(time / 0.001f)) - 1;
-	tim->Init.Prescaler = 8000 - 1;
-	tim->Init.ClockDivision = 0;
+	tim->Init.Period = ((uint32_t)(time / 0.001f)) - 1u;
+	tim->Init.Prescaler = 8000u - 1u;
+	tim->Init.ClockDivision = 0u;
 	tim->Init.CounterMode = TIM_COUNTERMODE_UP;
-	tim->Init.RepetitionCounter = 0;
+	tim->Init.RepetitionCounter = 0u;
 	tim->Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
 	HAL_TIM_Base_Init(tim);
 }
@@ -87,7 +87,7 @@ void USARTInit(GPIO_InitTypeDef * const gpio, UART_HandleTypeDef * const uart)
 
 	/* Configure USART */
 	uart->Instance = USART2;
-	uart->Init.BaudRate = 115200;
+	uart->Init.BaudRate = 115200u;
 	uart->Init.WordLength = UART_WORDLENGTH_8B;
 	uart->Init.Parity = UART_PARITY_NONE;
 	uart->Init.StopBits = UART_STOPBITS_1;
@@ -95,4 +95,12 @@ void USARTInit(GPIO_InitTypeDef * const gpio, UART_HandleTypeDef * const uart)
 	uart->Init.OverSampling = UART_OVERSAMPLING_16;
 	uart->Init.Mode = UART_MODE_TX_RX;
 	HAL_UART_Init(uart);
+}
+
+void initComparatorInput(GPIO_InitTypeDef * const gpio)
+{
+	gpio->Mode = GPIO_MODE_IT_RISING_FALLING;
+	gpio->Pull = GPIO_PULLUP;
+	gpio->Pin = GPIO_PIN_15;
+	HAL_GPIO_Init(GPIOC, gpio);
 }

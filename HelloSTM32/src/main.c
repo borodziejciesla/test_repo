@@ -25,7 +25,12 @@ int main(void)
 	uint32_t pwm_resolution = 1000;
 	float pwm_frequency = 300.0f;
 
-	initPWMState(getGlobalPWMState(), pwm_max_value, pwm_step_time, pwm_step, pwm_resolution, pwm_frequency);
+	initPWMState(getGlobalPWMState(),
+			pwm_max_value,
+			pwm_step_time,
+			pwm_step,
+			pwm_resolution,
+			pwm_frequency);
 
 	/* Initialize peripherals */
 	initButton(getGPIO());
@@ -33,11 +38,7 @@ int main(void)
 	initPWM(getGPIO(), getGlobalPWM(), getGlobalOC(), getGlobalPWMState());
 	initTimer(getGlobalTimer(), getGlobalPWMState()->pwm_step_time);
 	USARTInit(getGPIO(), getUart());
-
-	getGPIO()->Mode = GPIO_MODE_IT_RISING;
-	getGPIO()->Pull = GPIO_PULLDOWN;
-	getGPIO()->Pin = GPIO_PIN_14;
-	HAL_GPIO_Init(GPIOC, getGPIO());
+	initComparatorInput(getGPIO());
 
 	HAL_TIM_Base_Start_IT(getGlobalTimer());
 	__HAL_TIM_ENABLE_IT(getGlobalTimer(), TIM_IT_CC1);
@@ -47,8 +48,8 @@ int main(void)
 	HAL_NVIC_EnableIRQ(TIM2_IRQn);
 	HAL_NVIC_EnableIRQ(USART2_IRQn);
 
-	volatile float f = 16.0f;
+	while (1)
+	{
 
-	while (1) {
 	}
 }

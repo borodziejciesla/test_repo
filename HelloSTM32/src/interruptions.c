@@ -10,9 +10,10 @@
 #include "PWM_STATE.h"
 #include "initPWMState.h"
 #include "initGPIO.h"
+#include "uartFunctions.h"
 
 #define BUTTON			GPIO_PIN_13
-#define COMPARATOR 		GPIO_PIN_14
+#define COMPARATOR 		GPIO_PIN_15
 
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
