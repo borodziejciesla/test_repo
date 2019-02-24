@@ -19,6 +19,8 @@ extern void initPWM(GPIO_InitTypeDef * const gpio,
 		const PWM_STATE_T * const pwm_state);
 extern void initTimer(TIM_HandleTypeDef * const tim,
 		float time);
+extern void initTimer3(TIM_HandleTypeDef * const tim,
+		float time);
 extern void USARTInit(GPIO_InitTypeDef * const gpio,
 		UART_HandleTypeDef * const uart);
 extern void initComparatorInput(GPIO_InitTypeDef * const gpio);

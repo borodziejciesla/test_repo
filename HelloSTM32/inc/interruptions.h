@@ -12,6 +12,7 @@
 
 extern void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 extern void TIM2_IRQHandler(void);
+extern void TIM3_IRQHandler(void);
 extern void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 extern void USART2_IRQHandler(void);
 

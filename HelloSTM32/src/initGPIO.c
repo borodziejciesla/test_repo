@@ -104,3 +104,16 @@ void initComparatorInput(GPIO_InitTypeDef * const gpio)
 	gpio->Pin = GPIO_PIN_15;
 	HAL_GPIO_Init(GPIOB, gpio);
 }
+
+void initTimer3(TIM_HandleTypeDef * const tim,
+		float time)
+{
+	tim->Instance = TIM3;
+	tim->Init.Period = ((uint32_t)(time / 0.000001f)) - 1u;
+	tim->Init.Prescaler = 8u - 1u;
+	tim->Init.ClockDivision = 0u;
+	tim->Init.CounterMode = TIM_COUNTERMODE_UP;
+	tim->Init.RepetitionCounter = 0u;
+	tim->Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+	HAL_TIM_Base_Init(tim);
+}

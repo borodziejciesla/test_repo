@@ -11,9 +11,11 @@ static PWM_STATE_T pwm_state_global;
 static TIM_HandleTypeDef tim_global;
 static TIM_OC_InitTypeDef oc_global;
 static TIM_HandleTypeDef pwm_global;
+static TIM_HandleTypeDef timer_global;
 static UART_HandleTypeDef uart;
 static GPIO_InitTypeDef gpio;
 static volatile float speed;
+static uint32_t last_counter;
 
 PWM_STATE_T* getGlobalPWMState(void)
 {
@@ -71,4 +73,19 @@ const float* getSpeed(void)
 void setSpeed(float new_speed)
 {
 	speed = new_speed;
+}
+
+TIM_HandleTypeDef* getTimer3(void)
+{
+	return &timer_global;
+}
+
+uint32_t* getCounter(void)
+{
+	return &last_counter;
+}
+
+void setCounter(uint32_t new_counter)
+{
+	last_counter = new_counter;
 }

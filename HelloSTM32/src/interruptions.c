@@ -56,15 +56,14 @@ void buttonInterruption(void)
  */
 void comparatorInterruption(void)
 {
-	static float last_time = 0.0f;
-
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 
-	uint32_t t = HAL_GetTick();
-	float time = (float)t;
-	setSpeed(1.0f / ((time - last_time) / 1000.0f));
-	sendMeasurement(getSpeed());
-	last_time = time;
+	uint32_t timer_counter = *getCounter() + getTimer3()->Instance->CNT;
+	getTimer3()->Instance->CNT = 0u;
+	setCounter(0u);
+
+	float speed = (float)(1.0f / (timer_counter / 0.000001f));
+	setSpeed(speed);
 }
 
 /*****************************************************************************************/
@@ -90,41 +89,19 @@ void TIM2_IRQHandler(void)
 	HAL_TIM_IRQHandler(getGlobalTimer());
 }
 
+void TIM3_IRQHandler(void)
+{
+	setCounter(getTimer3()->Instance->CNT);
+	HAL_TIM_IRQHandler(getTimer3());
+}
+
 /*****************************************************************************************/
 /*
  * Timer interruption
  */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	PWM_STATE_T * pwm_state = getGlobalPWMState();
-
-	if ((pwm_state->is_started == false) && (pwm_state->is_initialized == false))
-	{
-		__HAL_TIM_SET_COMPARE(getGlobalPWM(), TIM_CHANNEL_2, 0.0f);
-	}
-	else if ((pwm_state->is_started == true) && (pwm_state->is_initialized == false))
-	{
-		__HAL_TIM_SET_COMPARE(getGlobalPWM(), TIM_CHANNEL_2, (float)(pwm_state->resolution));
-		pwm_state->is_initialized = true;
-	}
-	else if ((pwm_state->is_started == true) && (pwm_state->is_initialized == true))
-	{
-		if (pwm_state->current_pwm_value < pwm_state->max_pwm_value)
-		{
-			pwm_state->current_pwm_value += pwm_state->pwm_step;
-		}
-		else
-		{
-			/* Do nothing */
-		}
-
-		float pwm_value = pwm_state->resolution * MIN(pwm_state->max_pwm_value, pwm_state->current_pwm_value);
-		__HAL_TIM_SET_COMPARE(getGlobalPWM(), TIM_CHANNEL_2, pwm_value);
-	}
-	else
-	{
-		/* Do nothing */
-	}
+	sendMeasurement(getSpeed());
 }
 
 /*****************************************************************************************/
