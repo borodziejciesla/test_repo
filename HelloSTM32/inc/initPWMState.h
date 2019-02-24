@@ -25,6 +25,7 @@ extern void initPWMState(PWM_STATE_T * const pwm_state,
 		float pwm_frequency);
 extern UART_HandleTypeDef* getUart(void);
 extern GPIO_InitTypeDef* getGPIO(void);
-extern volatile float* getSpeed(void);
+extern const float* getSpeed(void);
+extern void setSpeed(float new_speed);
 
 #endif /* INITPWMSTATE_H_ */

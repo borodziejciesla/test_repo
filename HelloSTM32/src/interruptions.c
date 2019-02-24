@@ -26,7 +26,7 @@ void buttonInterruption(void)
 	static float last_time = 0.0f;
 
 	/* Signalizes interruption */
-	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+	//HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 
 	PWM_STATE_T * pwm_state = getGlobalPWMState();
 
@@ -45,9 +45,25 @@ void buttonInterruption(void)
 
 	uint32_t t = HAL_GetTick();
 	float time = (float)t;
-	*getSpeed() = 1.0f / ((time - last_time) / 1000.0f);
+	setSpeed(1.0f / ((time - last_time) / 1000.0f));
 	sendMeasurement(getSpeed());
 
+	last_time = time;
+}
+
+/*
+ * Comparator interruption
+ */
+void comparatorInterruption(void)
+{
+	static float last_time = 0.0f;
+
+	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+
+	uint32_t t = HAL_GetTick();
+	float time = (float)t;
+	setSpeed(1.0f / ((time - last_time) / 1000.0f));
+	sendMeasurement(getSpeed());
 	last_time = time;
 }
 
@@ -61,7 +77,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	}
 	else if (GPIO_Pin == COMPARATOR)
 	{
-		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+		comparatorInterruption();
 	}
 	else
 	{

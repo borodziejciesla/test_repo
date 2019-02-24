@@ -63,7 +63,12 @@ GPIO_InitTypeDef* getGPIO(void)
 	return &gpio;
 }
 
-volatile float* getSpeed(void)
+const float* getSpeed(void)
 {
 	return &speed;
+}
+
+void setSpeed(float new_speed)
+{
+	speed = new_speed;
 }

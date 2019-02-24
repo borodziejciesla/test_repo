@@ -102,5 +102,5 @@ void initComparatorInput(GPIO_InitTypeDef * const gpio)
 	gpio->Mode = GPIO_MODE_IT_RISING_FALLING;
 	gpio->Pull = GPIO_PULLUP;
 	gpio->Pin = GPIO_PIN_15;
-	HAL_GPIO_Init(GPIOC, gpio);
+	HAL_GPIO_Init(GPIOB, gpio);
 }
