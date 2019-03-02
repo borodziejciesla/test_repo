@@ -1,9 +1,10 @@
+#include <string.h>
+
 #include "stm32f1xx.h"
 #include "PWM_STATE.h"
 #include "initPWMState.h"
 #include "initGPIO.h"
-
-#include <string.h>
+#include "globals.h"
 
 /************************************************************************************************/
 int main(void)
@@ -56,7 +57,5 @@ int main(void)
 	HAL_NVIC_EnableIRQ(TIM3_IRQn);
 	HAL_NVIC_EnableIRQ(USART2_IRQn);
 
-	while (1)
-	{
-	}
+	while (1) {}
 }

@@ -11,6 +11,7 @@
 #include "initPWMState.h"
 #include "initGPIO.h"
 #include "uartFunctions.h"
+#include "globals.h"
 
 #define BUTTON			GPIO_PIN_13
 #define COMPARATOR 		GPIO_PIN_15
@@ -58,11 +59,11 @@ void comparatorInterruption(void)
 {
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 
-	uint32_t timer_counter = *getCounter() + getTimer3()->Instance->CNT;
+	uint32_t timer_counter = *getCounter() + (uint64_t)getTimer3()->Instance->CNT;
 	getTimer3()->Instance->CNT = 0u;
 	setCounter(0u);
 
-	float speed = (float)(1.0f / (timer_counter / 0.000001f));
+	float speed = (float)timer_counter;//(1.0f / ((float)timer_counter * 0.00000001f));
 	setSpeed(speed);
 }
 
