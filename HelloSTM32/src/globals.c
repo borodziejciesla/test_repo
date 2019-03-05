@@ -4,7 +4,7 @@ static PWM_STATE_T pwm_state_global;
 static TIM_HandleTypeDef tim_global;
 static TIM_OC_InitTypeDef oc_global;
 static TIM_HandleTypeDef pwm_global;
-static TIM_HandleTypeDef timer_global;
+static TIM_HandleTypeDef timer_comparator;
 static UART_HandleTypeDef uart;
 static GPIO_InitTypeDef gpio;
 static volatile float speed;
@@ -50,9 +50,9 @@ void setSpeed(float new_speed)
 	speed = new_speed;
 }
 
-TIM_HandleTypeDef* getTimer3(void)
+TIM_HandleTypeDef* getTimerComparator(void)
 {
-	return &timer_global;
+	return &timer_comparator;
 }
 
 uint64_t* getCounter(void)

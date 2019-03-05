@@ -42,14 +42,14 @@ int main(void)
 	initLED(getGPIO());
 	initPWM(getGPIO(), getGlobalPWM(), getGlobalOC(), getGlobalPWMState());
 	initTimer(getGlobalTimer(), getGlobalPWMState()->pwm_step_time);
-	initTimer3(getTimer3(), 1.0f);
+	initTimerComparator(getTimerComparator(), 1.0f);
 	USARTInit(getGPIO(), getUart());
 	initComparatorInput(getGPIO());
 
 	HAL_TIM_Base_Start_IT(getGlobalTimer());
-	HAL_TIM_Base_Start_IT(getTimer3());
+	HAL_TIM_Base_Start_IT(getTimerComparator());
 	__HAL_TIM_ENABLE_IT(getGlobalTimer(), TIM_IT_CC1);
-	__HAL_TIM_ENABLE_IT(getTimer3(), TIM_IT_CC1);
+	__HAL_TIM_ENABLE_IT(getTimerComparator(), TIM_IT_CC1);
 
 	/* Initialize interruptions */
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
