@@ -24,8 +24,6 @@
  */
 void buttonInterruption(void)
 {
-	static float last_time = 0.0f;
-
 	/* Signalizes interruption */
 	//HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 
@@ -43,13 +41,6 @@ void buttonInterruption(void)
 		pwm_state->current_pwm_value = INITIAL_PWM_VALUE;
 		__HAL_TIM_SET_COMPARE(getGlobalPWM(), TIM_CHANNEL_2, 0.0f);
 	}
-
-	uint32_t t = HAL_GetTick();
-	float time = (float)t;
-	setSpeed(1.0f / ((time - last_time) / 1000.0f));
-	sendMeasurement(getSpeed());
-
-	last_time = time;
 }
 
 /*****************************************************************************************/
@@ -58,14 +49,15 @@ void buttonInterruption(void)
  */
 void comparatorInterruption(void)
 {
-	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+	//HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 
 	uint32_t timer_counter = *getCounter() + (uint64_t)getTimerComparator()->Instance->CNT;
 	getTimerComparator()->Instance->CNT = 0u;
-	setCounter(0u);
 
-	float speed = (float)(*getCounter());//timer_counter;//(1.0f / ((float)timer_counter * 0.00000001f));
+	float speed = (float)(timer_counter);
 	setSpeed(speed);
+
+	setCounter(0u);
 }
 
 /*****************************************************************************************/
@@ -101,9 +93,10 @@ void TIM2_IRQHandler(void)
  */
 void TIM3_IRQHandler(void)
 {
-	setCounter(getTimerComparator()->Instance->CNT);
+	updateCounter(getTimerComparator()->Instance->CNT);
 	HAL_TIM_IRQHandler(getTimerComparator());
-	//HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+
+	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 }
 
 /*****************************************************************************************/

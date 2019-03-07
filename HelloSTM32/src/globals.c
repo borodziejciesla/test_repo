@@ -8,7 +8,7 @@ static TIM_HandleTypeDef timer_comparator;
 static UART_HandleTypeDef uart;
 static GPIO_InitTypeDef gpio;
 static volatile float speed;
-static uint64_t last_counter;
+static float last_counter;
 
 PWM_STATE_T* getGlobalPWMState(void)
 {
@@ -55,13 +55,18 @@ TIM_HandleTypeDef* getTimerComparator(void)
 	return &timer_comparator;
 }
 
-uint64_t* getCounter(void)
+float* getCounter(void)
 {
 	return &last_counter;
 }
 
 void setCounter(uint32_t new_counter)
 {
-	last_counter = (uint64_t)new_counter;
+	last_counter = (float)new_counter;
+}
+
+void updateCounter(uint32_t update_value)
+{
+	last_counter += (float)update_value;
 }
 

@@ -13,7 +13,8 @@ extern GPIO_InitTypeDef* getGPIO(void);
 extern const float* getSpeed(void);
 extern void setSpeed(float new_speed);
 extern TIM_HandleTypeDef* getTimerComparator(void);
-extern uint64_t* getCounter(void);
-extern void setCounter(uint32_t new);
+extern float* getCounter(void);
+extern void setCounter(uint32_t new_counter);
+extern void updateCounter(uint32_t update_value);
 
 #endif

@@ -110,7 +110,7 @@ void initTimerComparator(TIM_HandleTypeDef * const timer,
 {
 	timer->Instance = TIM3;
 	timer->Init.Period = 100000u - 1u;
-	timer->Init.Prescaler = 800u - 1u;
+	timer->Init.Prescaler = 80u - 1u;
 	timer->Init.ClockDivision = 0u;
 	timer->Init.CounterMode = TIM_COUNTERMODE_UP;
 	timer->Init.RepetitionCounter = 0u;

@@ -27,6 +27,7 @@ int main(void)
 	float pwm_step = 0.002f;
 	uint32_t pwm_resolution = 1000;
 	float pwm_frequency = 300.0f;
+	float comparator_time = 1.0f;
 
 	*getCounter() = 0u;
 
@@ -42,7 +43,7 @@ int main(void)
 	initLED(getGPIO());
 	initPWM(getGPIO(), getGlobalPWM(), getGlobalOC(), getGlobalPWMState());
 	initTimer(getGlobalTimer(), getGlobalPWMState()->pwm_step_time);
-	initTimerComparator(getTimerComparator(), 1.0f);
+	initTimerComparator(getTimerComparator(), comparator_time);
 	USARTInit(getGPIO(), getUart());
 	initComparatorInput(getGPIO());
 
