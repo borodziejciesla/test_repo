@@ -87,7 +87,7 @@ void USARTInit(GPIO_InitTypeDef * const gpio, UART_HandleTypeDef * const uart)
 
 	/* Configure USART */
 	uart->Instance = USART2;
-	uart->Init.BaudRate = 115200u;
+	uart->Init.BaudRate = 9600;
 	uart->Init.WordLength = UART_WORDLENGTH_8B;
 	uart->Init.Parity = UART_PARITY_NONE;
 	uart->Init.StopBits = UART_STOPBITS_1;
@@ -108,9 +108,9 @@ void initComparatorInput(GPIO_InitTypeDef * const gpio)
 void initTimerComparator(TIM_HandleTypeDef * const timer,
 		float period)
 {
-	timer->Instance = TIM3;
-	timer->Init.Period = 100000u - 1u;
-	timer->Init.Prescaler = 80u - 1u;
+	timer->Instance = TIM2;
+	timer->Init.Period = 10u - 1u;
+	timer->Init.Prescaler = 8000u - 1u;
 	timer->Init.ClockDivision = 0u;
 	timer->Init.CounterMode = TIM_COUNTERMODE_UP;
 	timer->Init.RepetitionCounter = 0u;

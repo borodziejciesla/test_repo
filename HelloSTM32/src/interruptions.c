@@ -13,34 +13,17 @@
 #include "uartFunctions.h"
 #include "globals.h"
 
-#define BUTTON			GPIO_PIN_13
 #define COMPARATOR 		GPIO_PIN_15
 
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
 /*****************************************************************************************/
 /*
- * Button interruption
+ * Set interrupt
  */
-void buttonInterruption(void)
+void TIM2_IRQHandler(void)
 {
-	/* Signalizes interruption */
-	//HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-
-	PWM_STATE_T * pwm_state = getGlobalPWMState();
-
-	if (pwm_state->is_started == false)
-	{
-		pwm_state->is_started = true;
-	}
-	else
-	{
-		/* stop PWM */
-		pwm_state->is_started = false;
-		pwm_state->is_initialized = false;
-		pwm_state->current_pwm_value = INITIAL_PWM_VALUE;
-		__HAL_TIM_SET_COMPARE(getGlobalPWM(), TIM_CHANNEL_2, 0.0f);
-	}
+  HAL_TIM_IRQHandler(getGlobalTimer());
 }
 
 /*****************************************************************************************/
@@ -49,26 +32,14 @@ void buttonInterruption(void)
  */
 void comparatorInterruption(void)
 {
-	//HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-
-	uint32_t timer_counter = *getCounter() + (uint64_t)getTimerComparator()->Instance->CNT;
-	getTimerComparator()->Instance->CNT = 0u;
-
-	float speed = (float)(timer_counter);
-	setSpeed(speed);
-
-	setCounter(0u);
+	incrementCounter();
 }
 
 /*****************************************************************************************/
 /* EXTI */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	if(GPIO_Pin == BUTTON)
-	{
-		buttonInterruption();
-	}
-	else if (GPIO_Pin == COMPARATOR)
+	if (GPIO_Pin == COMPARATOR)
 	{
 		comparatorInterruption();
 	}
@@ -80,33 +51,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 /*****************************************************************************************/
 /*
- * Timer 2
- */
-void TIM2_IRQHandler(void)
-{
-	HAL_TIM_IRQHandler(getGlobalTimer());
-}
-
-/*****************************************************************************************/
-/*
- * Timer 3
- */
-void TIM3_IRQHandler(void)
-{
-	updateCounter(getTimerComparator()->Instance->CNT);
-	HAL_TIM_IRQHandler(getTimerComparator());
-
-	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-}
-
-/*****************************************************************************************/
-/*
  * Timer interruption
  */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	//HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-	sendMeasurement(getSpeed());
+	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+
+	sendMeasurement(getCounter());
 }
 
 /*****************************************************************************************/

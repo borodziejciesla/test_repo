@@ -4,7 +4,6 @@
 #include "initPWMState.h"
 
 extern void send_string(char* s);
-
-extern void sendMeasurement(const volatile float * const measurement);
+extern void sendMeasurement(uint32_t measurement);
 
 #endif

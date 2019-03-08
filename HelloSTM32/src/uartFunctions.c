@@ -5,7 +5,9 @@ void send_string(char* s)
 	HAL_UART_Transmit_IT(getUart(), (uint8_t*)s, strlen(s));
 }
 
-void sendMeasurement(const volatile float * const measurement)
+void sendMeasurement(uint32_t measurement)
 {
-	HAL_UART_Transmit_IT(getUart(), (uint8_t*)measurement, sizeof(float));
+	uint8_t T [1];
+	T[0] = 66;
+	HAL_UART_Transmit_IT(getUart(), (uint8_t*)T, 1);
 }

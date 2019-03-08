@@ -10,11 +10,10 @@ extern TIM_HandleTypeDef* getGlobalTimer(void);
 extern TIM_OC_InitTypeDef* getGlobalOC(void);
 extern UART_HandleTypeDef* getUart(void);
 extern GPIO_InitTypeDef* getGPIO(void);
-extern const float* getSpeed(void);
-extern void setSpeed(float new_speed);
 extern TIM_HandleTypeDef* getTimerComparator(void);
-extern float* getCounter(void);
+extern uint32_t getCounter(void);
 extern void setCounter(uint32_t new_counter);
 extern void updateCounter(uint32_t update_value);
+extern void incrementCounter(void);
 
 #endif
