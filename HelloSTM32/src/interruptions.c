@@ -57,7 +57,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 
-	sendMeasurement(getCounter());
+	auto uint32_t tmp = getCounter();
+
+	sendMeasurement(tmp);
+	//setCounter(0u);
 }
 
 /*****************************************************************************************/
