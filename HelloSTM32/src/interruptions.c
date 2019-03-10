@@ -60,7 +60,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	auto uint32_t tmp = getCounter();
 
 	sendMeasurement(tmp);
-	//setCounter(0u);
+	setCounter(0u);
 }
 
 /*****************************************************************************************/

@@ -43,6 +43,6 @@ void updateCounter(uint32_t update_value)
 
 void incrementCounter(void)
 {
-	updateCounter(1u);
+	last_counter++;
 }
 

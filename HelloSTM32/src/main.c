@@ -9,7 +9,7 @@ int main(void)
 {
 	SystemCoreClock = 8000000; // 8Mhz
 
-	float measurement_step_time = 0.01f;
+	float measurement_step_time = 0.005f;
 
 	/* Initialize HAl and clock */
 	HAL_Init();

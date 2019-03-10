@@ -87,7 +87,7 @@ void USARTInit(GPIO_InitTypeDef * const gpio, UART_HandleTypeDef * const uart)
 
 	/* Configure USART */
 	uart->Instance = USART2;
-	uart->Init.BaudRate = 9600;
+	uart->Init.BaudRate = 115200;
 	uart->Init.WordLength = UART_WORDLENGTH_8B;
 	uart->Init.Parity = UART_PARITY_NONE;
 	uart->Init.StopBits = UART_STOPBITS_1;
