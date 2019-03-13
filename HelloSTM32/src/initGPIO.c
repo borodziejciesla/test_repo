@@ -109,7 +109,7 @@ void initTimerComparator(TIM_HandleTypeDef * const timer,
 		float period)
 {
 	timer->Instance = TIM2;
-	timer->Init.Period = 10u - 1u;
+	timer->Init.Period = 100u - 1u;
 	timer->Init.Prescaler = 8000u - 1u;
 	timer->Init.ClockDivision = 0u;
 	timer->Init.CounterMode = TIM_COUNTERMODE_UP;

@@ -7,10 +7,8 @@ void send_string(char* s)
 
 void sendMeasurement(uint32_t measurement)
 {
-	char message[6];
-	message[0] = 's';
-	memcpy(message + 1, &measurement, sizeof(measurement));
-	message[5] = 'n';
+	static char message[7] = {'s', 't', 'a'};
+	memcpy(message + 3, (uint8_t*)&measurement, sizeof(measurement));
 
-	HAL_UART_Transmit_IT(getUart(), message, 6);
+	HAL_UART_Transmit_IT(getUart(), message, 7);
 }
