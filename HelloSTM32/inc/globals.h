@@ -15,5 +15,6 @@ extern uint32_t getCounter(void);
 extern void setCounter(uint32_t new_counter);
 extern void updateCounter(uint32_t update_value);
 extern void incrementCounter(void);
+extern ADC_HandleTypeDef* getADC(void);
 
 #endif

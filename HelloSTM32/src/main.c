@@ -17,12 +17,14 @@ int main(void)
 	__HAL_RCC_GPIOC_CLK_ENABLE();
 	__HAL_RCC_TIM2_CLK_ENABLE();
 	__HAL_RCC_USART2_CLK_ENABLE();
+	__HAL_RCC_ADC1_CLK_ENABLE();
 
 	/* Initialize peripherals */
 	initLED(getGPIO());
 	initTimerComparator(getGlobalTimer(), measurement_step_time);
 	USARTInit(getGPIO(), getUart());
-	initComparatorInput(getGPIO());
+	initComparatorInput(getGPIO());\
+	initADC(getADC());
 
 	/* Initialize interruptions */
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
@@ -31,9 +33,7 @@ int main(void)
 
 	/* Start modules */
 	HAL_TIM_Base_Start_IT(getGlobalTimer());
-	//__HAL_TIM_ENABLE_IT(getGlobalTimer(), TIM_IT_CC1);
-
-
+	HAL_ADC_Start(getADC());
 
 	while (1) {}
 }

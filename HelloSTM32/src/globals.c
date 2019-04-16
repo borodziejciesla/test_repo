@@ -5,6 +5,7 @@ static TIM_OC_InitTypeDef oc_global;
 static UART_HandleTypeDef uart;
 static GPIO_InitTypeDef gpio;
 static uint32_t last_counter = 0u;
+static ADC_HandleTypeDef adc;
 
 TIM_HandleTypeDef* getGlobalTimer(void)
 {
@@ -46,3 +47,7 @@ void incrementCounter(void)
 	last_counter++;
 }
 
+ADC_HandleTypeDef* getADC(void)
+{
+	return &adc;
+}

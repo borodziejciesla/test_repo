@@ -33,6 +33,7 @@ void TIM2_IRQHandler(void)
 void comparatorInterruption(void)
 {
 	incrementCounter();
+	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 }
 
 /*****************************************************************************************/
@@ -43,10 +44,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	{
 		comparatorInterruption();
 	}
-	else
-	{
-		/* Do nothing */
-	}
 }
 
 /*****************************************************************************************/
@@ -55,7 +52,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
  */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+	//HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 
 	auto uint32_t tmp = getCounter();
 

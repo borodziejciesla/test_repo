@@ -117,3 +117,29 @@ void initTimerComparator(TIM_HandleTypeDef * const timer,
 	timer->Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
 	HAL_TIM_Base_Init(timer);
 }
+
+void initADC(ADC_HandleTypeDef * const adc)
+{
+	RCC_PeriphCLKInitTypeDef adc_clk;
+	adc_clk.PeriphClockSelection = RCC_PERIPHCLK_ADC;
+	adc_clk.AdcClockSelection = RCC_ADCPCLK2_DIV2;
+	HAL_RCCEx_PeriphCLKConfig(&adc_clk);
+
+	adc->Instance = ADC1;
+	adc->Init.ContinuousConvMode = ENABLE;
+	adc->Init.ExternalTrigConv = ADC_SOFTWARE_START;
+	adc->Init.DataAlign = ADC_DATAALIGN_RIGHT;
+	adc->Init.ScanConvMode = ADC_SCAN_DISABLE;
+	adc->Init.NbrOfConversion = 1;
+	adc->Init.DiscontinuousConvMode = DISABLE;
+	adc->Init.NbrOfDiscConversion = 1;
+	HAL_ADC_Init(getADC());
+
+	HAL_ADCEx_Calibration_Start(adc);
+
+	ADC_ChannelConfTypeDef adc_ch;
+	adc_ch.Channel = ADC_CHANNEL_VREFINT;
+	adc_ch.Rank = ADC_REGULAR_RANK_1;
+	adc_ch.SamplingTime = ADC_SAMPLETIME_13CYCLES_5;
+	HAL_ADC_ConfigChannel(adc, &adc_ch);
+}
