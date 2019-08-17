@@ -40,13 +40,7 @@ void comparatorInterruption(void)
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	if (GPIO_Pin == COMPARATOR)
-	{
 		comparatorInterruption();
-	}
-	else
-	{
-		/* Do nothing */
-	}
 }
 
 /*****************************************************************************************/
@@ -55,12 +49,22 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
  */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+	static unsigned char ADSwrite[6];
+	static const char ADS1015_ADDRESS = 0x48;
 
-	auto uint32_t tmp = getCounter();
+	ADSwrite[0] = 0x01;
+	ADSwrite[1] = 0xC1;
+	ADSwrite[2] = 0x83;
 
-	sendMeasurement(tmp);
-	setCounter(0u);
+	HAL_I2C_Master_Transmit(getI2C(), ADS1015_ADDRESS << 1, ADSwrite, 3, 100);
+	ADSwrite[0] = 0x00;
+	HAL_I2C_Master_Transmit(getI2C(), ADS1015_ADDRESS << 1, ADSwrite, 1, 100);
+	HAL_Delay(20);
+	HAL_I2C_Master_Receive(getI2C(), ADS1015_ADDRESS << 1, ADSwrite, 2, 100);
+	int16_t reading = (ADSwrite[0] << 8 | ADSwrite[1]);
+	if(reading < 0 )
+		reading = 0;
+	setVoltage(reading * getVoltageStep());
 }
 
 /*****************************************************************************************/

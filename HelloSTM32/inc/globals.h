@@ -15,5 +15,9 @@ extern uint32_t getCounter(void);
 extern void setCounter(uint32_t new_counter);
 extern void updateCounter(uint32_t update_value);
 extern void incrementCounter(void);
+extern void setVoltage(float voltage);
+extern float getVoltage(void);
+extern float getVoltageStep(void);
+extern I2C_HandleTypeDef* getI2C(void);
 
 #endif
