@@ -13,6 +13,7 @@ static ADC_HandleTypeDef adc;
 static RCC_PeriphCLKInitTypeDef adc_clk;
 static ADC_ChannelConfTypeDef adc_ch;
 static GPIO_InitTypeDef gpio;
+static TIM_HandleTypeDef tim2;
 
 /* Function Definitions */
 bool InitUART(void)
@@ -86,6 +87,35 @@ void InitGPIO(void)
 	gpio.Pin = GPIO_PIN_3;
 
 	HAL_GPIO_Init(GPIOA, &gpio);
+}
+
+bool InitTimer(void)
+{
+	__HAL_RCC_TIM2_CLK_ENABLE();
+
+	tim2.Instance = TIM2;
+	tim2.Init.Period = 10 - 1;
+	tim2.Init.Prescaler = 8000 - 1;
+	tim2.Init.ClockDivision = 0;
+	tim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+	tim2.Init.RepetitionCounter = 0;
+	tim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+	HAL_StatusTypeDef base_status = HAL_TIM_Base_Init(&tim2);
+	if (HAL_OK != base_status)
+		return false;
+
+	HAL_NVIC_EnableIRQ(TIM2_IRQn);
+
+	HAL_StatusTypeDef start_status = HAL_TIM_Base_Start_IT(&tim2);
+	if (HAL_OK != start_status)
+			return false;
+
+	return true;
+}
+
+void TIM2_IRQHandler(void)
+{
+	HAL_TIM_IRQHandler(&tim2);
 }
 
 UART_HandleTypeDef* GetUART(void)

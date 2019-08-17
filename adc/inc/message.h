@@ -9,8 +9,8 @@
 #define MESSAGE_H_
 
 /* Message Definition */
-#define MESSAGE_HEADER_LENGTH	(3U)
-#define MESSAGE_END_LENGTH		(3U)
+#define MESSAGE_HEADER_LENGTH	(4U)
+#define MESSAGE_END_LENGTH		(4U)
 
 typedef struct Message
 {
@@ -23,6 +23,5 @@ typedef struct Message
 extern void InitMessage(void);
 extern void SetMessageValue(const float angle);
 extern Message* GetMessage(void);
-
 
 #endif /* MESSAGE_H_ */

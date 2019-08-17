@@ -15,6 +15,7 @@
 extern bool InitUART(void);
 extern bool InitADC(void);
 extern void InitGPIO(void);
+extern bool InitTimer(void);
 
 extern UART_HandleTypeDef* GetUART(void);
 extern ADC_HandleTypeDef* GetADC(void);
