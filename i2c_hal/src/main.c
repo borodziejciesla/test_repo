@@ -1,5 +1,8 @@
 #include <string.h>
+
 #include "stm32f1xx.h"
+
+#include "message.h"
 
 UART_HandleTypeDef uart;
 
@@ -76,12 +79,20 @@ int main(void)
 
  HAL_ADC_Start(&adc);
 
- uint32_t * value;
+ MessageT message;
+ message.header[0] = 's';
+ message.header[1] = 'a';
+ message.header[2] = 'p';
+
+ message.end[0] = 'e';
+ message.end[1] = 'n';
+ message.end[2] = 'd';
 
  while (1)
  {
 	 uint32_t value = HAL_ADC_GetValue(&adc);
-	 HAL_UART_Transmit(&uart, (uint8_t*)(&value), sizeof(uint32_t), 1000);
+	 message.angle = (float)value;
+	 HAL_UART_Transmit(&uart, (uint8_t*)(&message), sizeof(MessageT), 1000);
 	 printf("Adc = %ld (%.3fV)\r\n", value, value * 3.3f / 4096.0f);
  }
 }
