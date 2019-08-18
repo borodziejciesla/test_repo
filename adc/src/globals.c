@@ -9,6 +9,7 @@
 
 /* Variables */
 static UART_HandleTypeDef uart;
+static UART_HandleTypeDef uart1;
 static ADC_HandleTypeDef adc;
 static RCC_PeriphCLKInitTypeDef adc_clk;
 static ADC_ChannelConfTypeDef adc_ch;
@@ -30,7 +31,25 @@ bool InitUART(void)
 	uart.Init.Mode = UART_MODE_TX_RX;
 	HAL_StatusTypeDef initialization_status = HAL_UART_Init(&uart);
 
-	return (HAL_OK == initialization_status);
+	if (HAL_OK != initialization_status);
+	return false;
+
+	__HAL_RCC_USART1_CLK_ENABLE();
+
+	uart1.Instance = USART1;
+	uart1.Init.BaudRate = 115200;
+	uart1.Init.WordLength = UART_WORDLENGTH_8B;
+	uart1.Init.Parity = UART_PARITY_NONE;
+	uart1.Init.StopBits = UART_STOPBITS_1;
+	uart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	uart1.Init.OverSampling = UART_OVERSAMPLING_16;
+	uart1.Init.Mode = UART_MODE_TX_RX;
+	HAL_StatusTypeDef initialization_status1 = HAL_UART_Init(&uart1);
+
+	if (HAL_OK != initialization_status);
+		return false;
+
+	return true;
 }
 
 bool InitADC(void)
@@ -61,7 +80,7 @@ bool InitADC(void)
 
 	adc_ch.Channel = ADC_CHANNEL_0;
 	 adc_ch.Rank = ADC_REGULAR_RANK_1;
-	 adc_ch.SamplingTime = ADC_SAMPLETIME_13CYCLES_5;
+	 adc_ch.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;//ADC_SAMPLETIME_13CYCLES_5;
 	HAL_StatusTypeDef adc_channel_status = HAL_ADC_ConfigChannel(&adc, &adc_ch);
 	if (HAL_OK != adc_channel_status)
 			return false;

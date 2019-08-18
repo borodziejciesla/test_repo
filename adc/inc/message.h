@@ -10,13 +10,11 @@
 
 /* Message Definition */
 #define MESSAGE_HEADER_LENGTH	(4U)
-#define MESSAGE_END_LENGTH		(4U)
 
 typedef struct Message
 {
 	char start[MESSAGE_HEADER_LENGTH];
-	float angle;
-	char end[MESSAGE_END_LENGTH];
+	float angle;;
 } Message;
 
 /* Methods */
