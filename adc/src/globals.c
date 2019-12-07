@@ -80,7 +80,7 @@ bool InitADC(void)
 
 	adc_ch.Channel = ADC_CHANNEL_0;
 	 adc_ch.Rank = ADC_REGULAR_RANK_1;
-	 adc_ch.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;//ADC_SAMPLETIME_13CYCLES_5;
+	 adc_ch.SamplingTime = ADC_SAMPLETIME_1CYCLE_5; //ADC_SAMPLETIME_239CYCLES_5
 	HAL_StatusTypeDef adc_channel_status = HAL_ADC_ConfigChannel(&adc, &adc_ch);
 	if (HAL_OK != adc_channel_status)
 			return false;
@@ -113,7 +113,7 @@ bool InitTimer(void)
 	__HAL_RCC_TIM2_CLK_ENABLE();
 
 	tim2.Instance = TIM2;
-	tim2.Init.Period = 10 - 1;
+	tim2.Init.Period = 5 - 1;
 	tim2.Init.Prescaler = 8000 - 1;
 	tim2.Init.ClockDivision = 0;
 	tim2.Init.CounterMode = TIM_COUNTERMODE_UP;

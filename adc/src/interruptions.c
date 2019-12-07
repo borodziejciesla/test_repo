@@ -18,7 +18,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	static const float maximum_range = 5.0F;			// [m]
 	static const float maximum_output_voltage = 10.0F;	// [V]
 	static const float height = 0.54F;					// [m]
-	static const float offset = 0.255F;					// [m]
+	static const float offset = 0.268F;					// [m]
 
 	uint32_t raw_value = HAL_ADC_GetValue(GetADC());
 	const float voltage = ((float)raw_value) * scaling_factor;
